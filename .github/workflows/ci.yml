@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Analyse des scripts
+        run: docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:v0.11.0 doctor tests/*.sh scenarios/*/*.sh
+
+  scenarios:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Panne, check refusé, solution du README, check accepté
+        run: tests/scenarios.sh

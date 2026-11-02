@@ -1,5 +1,7 @@
 # linux-doctor
 
+[![CI](https://github.com/Adieali/linux-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/Adieali/linux-doctor/actions/workflows/ci.yml)
+
 Des incidents de production Linux, de niveau senior, à résoudre depuis ton terminal.
 
 Chaque scénario démarre un vrai serveur Debian (systemd, nginx, cron) dans un conteneur et y reproduit un incident tiré de cas réels en entreprise : plusieurs symptômes, des fausses pistes, des contraintes de production. Tu reçois le ticket, tu diagnostiques, tu répares, puis un script vérifie le résultat. Il refuse aussi les réparations rapides qui créent un autre problème.
@@ -32,5 +34,7 @@ Le README de chaque scénario contient le ticket, l'impact business, les enjeux 
 ## Bon à savoir
 
 Le conteneur tourne avec `--privileged` : systemd en a besoin sous Docker, et les scénarios montent des systèmes de fichiers. C'est un labo, lance-le sur ton poste et pas sur un serveur partagé.
+
+Les solutions publiées sont vérifiées. À chaque push, la CI rejoue chaque scénario avec `tests/scenarios.sh` : la panne s'installe, le check doit la refuser, puis les commandes de la démarche commentée sont exécutées telles qu'elles sont écrites, et le check doit les accepter.
 
 Licence MIT.

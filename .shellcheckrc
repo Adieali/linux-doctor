@@ -1,0 +1,2 @@
+# Les check.sh passent leurs fonctions à ok(), qui les appelle par "$@" : shellcheck ne voit pas cet appel indirect.
+disable=SC2329
