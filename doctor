@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# linux-doctor : lance un serveur en panne, puis vérifie ta réparation.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+die() { echo "$*" >&2; exit 1; }
+
+usage() {
+  cat <<'EOF'
+Usage : ./doctor <commande> [numéro]
+
+  list          liste les scénarios
+  start 01      prépare le serveur en panne et ouvre un shell root dessus
+  shell 01      rouvre un shell sur le serveur
+  check 01      vérifie ta réparation
+  stop 01       supprime le serveur
+EOF
+  exit 1
+}
+
+# Section "## Titre" d'un README, jusqu'à la section suivante.
+section() { awk -v t="## $2" '$0 == t {f=1; next} /^## /{f=0} f' "$1/README.md"; }
+
+[[ $# -ge 1 ]] || usage
+cmd=$1
+
+if [[ $cmd == list ]]; then
+  for d in scenarios/*/; do head -1 "${d}README.md" | sed 's/^# /  /'; done
+  exit 0
+fi
+
+[[ $# -eq 2 ]] || usage
+dirs=(scenarios/"$2"-*/)
+[[ -d ${dirs[0]} ]] || die "Scénario $2 introuvable. Voir : ./doctor list"
+dir=${dirs[0]%/}
+box=linux-doctor-$2
+
+case $cmd in
+  start)
+    echo "Construction de l'image..."
+    BUILDX_GIT_INFO=0 docker build -q -t linux-doctor . >/dev/null
+    docker rm -f "$box" >/dev/null 2>&1 || true
+    docker run -d --name "$box" --hostname srv-prod-01 --privileged --cgroupns=private linux-doctor >/dev/null
+    echo "Démarrage du serveur..."
+    for _ in {1..30}; do
+      state=$(docker exec "$box" systemctl is-system-running 2>/dev/null || true)
+      [[ $state == running || $state == degraded ]] && break
+      sleep 1
+    done
+    docker cp "$dir/break.sh" "$box:/opt/break.sh"
+    docker exec "$box" bash -c 'bash /opt/break.sh && rm -f /opt/break.sh' \
+      || die "La préparation du scénario a échoué (break.sh). Relance : ./doctor start $2"
+    echo
+    head -1 "$dir/README.md" | sed 's/^# //'
+    section "$dir" "Le ticket" | sed 's/^> *//; s/\*\*//g'
+    echo "Tape exit quand tu as fini, puis : ./doctor check $2"
+    echo
+    if [[ -t 0 ]]; then docker exec -it -w /root "$box" bash -l; fi
+    ;;
+  shell)
+    docker exec -it -w /root "$box" bash -l
+    ;;
+  check)
+    docker cp "$dir/check.sh" "$box:/opt/check.sh"
+    if docker exec "$box" bash -c 'bash /opt/check.sh; rc=$?; rm -f /opt/check.sh; exit $rc'; then
+      echo "Serveur réparé. La démarche commentée est dans $dir/README.md"
+    else
+      echo "Pas encore. Des indices sont dans $dir/README.md"
+      exit 1
+    fi
+    ;;
+  stop)
+    docker rm -f "$box" >/dev/null && echo "Serveur $box supprimé."
+    ;;
+  *)
+    usage
+    ;;
+esac
