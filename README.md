@@ -21,6 +21,14 @@ cd linux-doctor
 
 `./doctor shell 01` rouvre un shell sur le serveur si tu l'as quitté avant d'avoir fini.
 
+## Scénarios
+
+| # | Incident | Notions |
+|---|---|---|
+| [01](scenarios/01-disque-plein-inexplique) | Le disque est plein, et rien ne l'explique | `df`, `du`, `lsof`, `findmnt`, unités systemd |
+
+Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
+
 ## Bon à savoir
 
 Le conteneur tourne avec `--privileged` : systemd en a besoin sous Docker, et les scénarios montent des systèmes de fichiers. C'est un labo, lance-le sur ton poste et pas sur un serveur partagé.
