@@ -2,11 +2,11 @@
 
 [![CI](https://github.com/Adieali/linux-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/Adieali/linux-doctor/actions/workflows/ci.yml)
 
-Des incidents de production Linux, de niveau senior, à résoudre depuis ton terminal.
+Des incidents de production Linux, à résoudre depuis ton terminal.
 
 Chaque scénario démarre un vrai serveur Debian (systemd, nginx, cron) dans un conteneur et y reproduit un incident tiré de cas réels en entreprise : plusieurs symptômes, des fausses pistes, des contraintes de production. Tu reçois le ticket, tu diagnostiques, tu répares, puis un script vérifie le résultat. Il refuse aussi les réparations rapides qui créent un autre problème.
 
-Le projet avance sous forme de défi : un nouvel incident chaque jour pendant 30 jours, à partir du 2 novembre 2026. Chaque scénario explique aussi ce que la panne coûte à l'entreprise, ce qui peut mal tourner pendant l'intervention, et pourquoi la réparation proposée vaut mieux que les réflexes habituels.
+Le projet avance sous forme de défi : 30 incidents, publiés du 2 novembre au 1er décembre 2026. Chaque scénario explique aussi ce que la panne coûte à l'entreprise, ce qui peut mal tourner pendant l'intervention, et pourquoi la réparation proposée vaut mieux que les réflexes habituels.
 
 ## Démarrage
 
