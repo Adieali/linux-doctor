@@ -9,9 +9,9 @@ RUN apt-get update \
       systemd systemd-sysv procps iproute2 lsof psmisc curl nginx python3 cron less nano vim-tiny \
       openssh-server openssh-client logrotate sudo \
       iputils-ping bind9-dnsutils tcpdump strace dnsmasq-base dhcpcd-base \
-      postgresql nftables \
+      postgresql nftables redis-server \
  && rm -rf /var/lib/apt/lists/* \
- && systemctl disable postgresql nftables \
+ && systemctl disable postgresql nftables redis-server \
  && systemctl mask getty.target systemd-udevd.service systemd-logind.service systemd-modules-load.service
 
 STOPSIGNAL SIGRTMIN+3
