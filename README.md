@@ -29,6 +29,7 @@ cd linux-doctor
 |---|---|---|
 | [01](scenarios/01-disque-plein-inexplique) | Le disque est plein, et rien ne l'explique | `df`, `du`, `lsof`, `findmnt`, unités systemd |
 | [02](scenarios/02-chaque-rotation-remplit-le-disque) | Chaque rotation de logs remplit un peu plus le disque | `logrotate`, `ls -s`, `du`, `/proc`, unités systemd |
+| [03](scenarios/03-cinq-secondes-pile) | Certaines requêtes prennent 5 secondes pile | `curl -w`, `strace`, `dig`, `tcpdump`, DHCP |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
