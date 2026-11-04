@@ -20,6 +20,8 @@ install -d /etc/systemd/system/postgresql@17-main.service.d
 cat > /etc/systemd/system/postgresql@17-main.service.d/10-tranche.conf <<'EOF'
 [Service]
 Slice=base.slice
+# Exploitation : un arrêt de la base ne bloque pas plus de 30 s, ensuite systemd tue ce qui reste.
+TimeoutStopSec=30s
 EOF
 
 attendre_base() {
@@ -45,6 +47,8 @@ INSERT INTO commandes
 SELECT i, 'client-' || (i % 50000), i || ', ' || repeat('rue de la Gare ', 8), (i % 9973) / 100.0,
        timestamptz '2026-11-04 02:00+01' - i * interval '1 minute'
 FROM generate_series(1, 1000000) i;
+-- Comme en prod, un point de contrôle depuis le chargement : la récupération après le crash reste courte.
+CHECKPOINT;
 EOF
 
 install -d -o postgres -g postgres /srv/exports
@@ -92,10 +96,12 @@ if systemctl start export-nuit 2>/dev/null; then
   echo "L'export aurait dû faire tomber la base" >&2
   exit 1
 fi
-# systemd arrête toute la base quand il voit l'oom-kill : attendre la fin de cet arrêt avant de relancer.
-for _ in {1..120}; do
+# systemd arrête toute la base quand il voit l'oom-kill. Si cet arrêt tombe pendant la réinitialisation qui
+# suit le crash, PostgreSQL ne s'arrête plus : systemd tue ce qui reste au bout de TimeoutStopSec, deux fois.
+for _ in {1..180}; do
   [[ $(systemctl show -p ActiveState --value postgresql@17-main) =~ ^(inactive|failed)$ ]] && break
   sleep 0.5
 done
-systemctl start postgresql@17-main
+# Mieux vaut échouer clairement qu'attendre un arrêt qui ne finit pas.
+timeout 120 systemctl start postgresql@17-main
 attendre_base

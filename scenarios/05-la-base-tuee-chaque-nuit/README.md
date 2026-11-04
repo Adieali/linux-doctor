@@ -88,7 +88,7 @@ systemctl show postgresql@17-main -p OOMScoreAdjust -p OOMPolicy   # -900, stop
 cat /proc/"$(pgrep -o -u postgres postgres)"/oom_score_adj          # -900 pour le processus principal
 ```
 
-L'unité Debian protège le processus principal de PostgreSQL (-900) et remet ses processus enfants à 0. Un enfant tué, et PostgreSQL coupe toutes les connexions pour repartir en récupération. Puis systemd achève le travail : `OOMPolicy=stop` est sa valeur par défaut, l'unité entière est arrêtée, et rien ne la redémarre avant l'astreinte du matin.
+L'unité Debian protège le processus principal de PostgreSQL (-900) et remet ses processus enfants à 0. Un enfant tué, et PostgreSQL coupe toutes les connexions pour repartir en récupération. Puis systemd achève le travail : `OOMPolicy=stop` est sa valeur par défaut, l'unité entière est arrêtée, et rien ne la redémarre avant l'astreinte du matin. Si cet arrêt tombe pendant la réinitialisation qui suit le crash, PostgreSQL ne le traite plus, et systemd finit par tuer ce qui reste au bout de `TimeoutStopSec` : `Stopping timed out` dans le journal.
 
 Corriger l'export d'abord. `FETCH_COUNT` fait lire le résultat par paquets de 10 000 lignes, écrits au fur et à mesure. La sortie est la même, octet pour octet :
 
