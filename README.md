@@ -31,6 +31,7 @@ cd linux-doctor
 | [02](scenarios/02-chaque-rotation-remplit-le-disque) | Chaque rotation de logs remplit un peu plus le disque | `logrotate`, `ls -s`, `du`, `/proc`, unités systemd |
 | [03](scenarios/03-cinq-secondes-pile) | Certaines requêtes prennent 5 secondes pile | `curl -w`, `strace`, `dig`, `tcpdump`, DHCP |
 | [04](scenarios/04-plafonne-malgre-limits-conf) | limits.conf a été augmenté, l'appli plafonne toujours | `ulimit`, `/proc`, `ss`, unités systemd |
+| [05](scenarios/05-la-base-tuee-chaque-nuit) | L'OOM killer tue la base chaque nuit | `free`, `dmesg`, `/sys/fs/cgroup`, `psql`, unités systemd |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
