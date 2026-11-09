@@ -38,6 +38,7 @@ cd linux-doctor
 | [09](scenarios/09-une-migration-fige-la-prod) | Une migration fige toute la prod | `pg_stat_activity`, `psql`, unités systemd |
 | [10](scenarios/10-remaining-connection-slots-are-reserved) | « remaining connection slots are reserved » | `pg_stat_activity`, `psql`, `journalctl` |
 | [11](scenarios/11-les-clients-ne-voient-pas-leurs-commandes) | Les clients ne voient pas leurs commandes | `pg_stat_replication`, `psql`, `curl`, `journalctl` |
+| [12](scenarios/12-un-delete-sans-where) | Un DELETE sans WHERE, et les commandes continuent d'arriver | `psql`, `pg_createcluster`, `pg_ctlcluster`, journaux PostgreSQL |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
