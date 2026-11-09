@@ -31,7 +31,7 @@ Si c'est bon, le check rejoue la nuit et vérifie :
 
 - l'export se termine, et une connexion ouverte sur la base pendant ce temps n'est pas coupée
 - le fichier est complet, au format attendu par l'ERP
-- rejoué avec 64 Mo de mémoire, l'export se termine encore : sa consommation ne dépend plus de la taille de la table
+- rejoué une dernière fois, psql reste sous 64 Mo de mémoire : sa consommation ne dépend plus de la taille de la table
 
 ## Indices
 

@@ -34,17 +34,17 @@ fichier_erp() {
   [[ $(md5sum < "$fichier") == "$(pg -F ';' -v FETCH_COUNT=10000 -c "$requete" | md5sum)" ]]
 }
 
-# Le même export avec 64 Mo, sans swap : un psql qui charge tout le résultat n'y tient pas.
-nuit_bridee() {
-  local d=/run/systemd/system/export-nuit.service.d rc
-  install -d "$d"
-  printf '[Service]\nMemoryMax=64M\nMemorySwapMax=0\n' > "$d/zz-check.conf"
-  systemctl daemon-reload
-  systemctl start export-nuit
-  rc=$?
-  rm -f "$d/zz-check.conf"
-  systemctl daemon-reload
-  return "$rc"
+# Le même export, mémoire de psql mesurée : un psql qui charge tout le résultat dépasse 64 Mo.
+# On mesure le processus (RSS maximal) et non le cgroup : un plafond sur l'unité compterait aussi le cache
+# du fichier écrit (170 Mo), et sans contrôleur io dans le labo, rien n'oblige le noyau à le réécrire à
+# temps. Le résultat dépendait alors du disque et du noyau (OOM à chaque essai sur le runner GitHub).
+memoire_bornee() {
+  local kio
+  kio=$(runuser -u postgres -- python3 -c '
+import resource, subprocess
+subprocess.run(["/usr/local/bin/export-compta"], check=True)
+print(resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss)') || return 1
+  (( kio < 64 * 1024 ))
 }
 
 ok "la base tourne dans base.slice, avec le budget du DBA (400 Mo, sans swap)" budget_dba
@@ -58,8 +58,8 @@ if (( fail == 0 )); then
   rm -f "$fichier"
   ok "l'export se termine, et la connexion ouverte n'est pas coupée" nuit
   ok "le fichier est complet, au format attendu par l'ERP" fichier_erp
-  echo "  Même export avec 64 Mo de mémoire..."
-  ok "il se termine encore : sa mémoire ne dépend plus de la taille de la table" nuit_bridee
+  echo "  Même export, mémoire de psql mesurée..."
+  ok "psql reste sous 64 Mo : sa mémoire ne dépend plus de la taille de la table" memoire_bornee
 else
   echo "  [KO] nuit de test non rejouée tant que les points ci-dessus ne sont pas réglés"
 fi
