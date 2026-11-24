@@ -42,6 +42,7 @@ cd linux-doctor
 | [13](scenarios/13-la-sauvegarde-ne-se-restaure-pas) | La sauvegarde existe mais ne se restaure pas | `tar`, `pg_ctl`, `psql`, `journalctl` |
 | [14](scenarios/14-redis-refuse-les-ecritures) | Redis refuse les écritures | `redis-cli`, `journalctl`, `/sys/fs/cgroup`, unités systemd |
 | [15](scenarios/15-les-partenaires-ne-passent-plus) | Le certificat est valide, les partenaires ne passent plus | `openssl s_client`, `openssl x509`, `curl -v`, nginx |
+| [16](scenarios/16-repond-a-l-admin-pas-a-la-prod) | Le serveur répond au réseau d'admin, mais plus à la prod | `ip route`, `ip rule`, `tcpdump`, `sysctl`, ifupdown |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
