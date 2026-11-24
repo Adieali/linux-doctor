@@ -21,6 +21,23 @@ EOF
 # Section "## Titre" d'un README, jusqu'à la section suivante.
 section() { awk -v t="## $2" '$0 == t {f=1; next} /^## /{f=0} f' "$1/README.md"; }
 
+# Attend la fin du démarrage. « maintenance » compte : un serveur bloqué en mode urgence a fini de démarrer.
+demarrage() {
+  local state
+  for _ in {1..150}; do
+    state=$(docker exec "$box" systemctl is-system-running 2>/dev/null || true)
+    [[ $state == running || $state == degraded || $state == maintenance ]] && return
+    sleep 1
+  done
+}
+
+# break.sh et check.sh demandent un redémarrage du serveur en sortant avec le code 3.
+redemarrer() {
+  echo "Redémarrage du serveur..."
+  docker restart -t 30 "$box" >/dev/null   # 30 s pour un arrêt propre, comme un vrai reboot
+  demarrage
+}
+
 [[ $# -ge 1 ]] || usage
 cmd=$1
 
@@ -40,16 +57,16 @@ case $cmd in
     echo "Construction de l'image..."
     BUILDX_GIT_INFO=0 docker build -q -t linux-doctor . >/dev/null
     docker rm -f "$box" >/dev/null 2>&1 || true
-    docker run -d --name "$box" --hostname srv-prod-01 --privileged --cgroupns=private linux-doctor >/dev/null
+    # on-failure : un reboot tapé sur le serveur le relance, comme une vraie machine ; un arrêt le laisse arrêté.
+    docker run -d --name "$box" --hostname srv-prod-01 --privileged --cgroupns=private --restart=on-failure \
+      linux-doctor >/dev/null
     echo "Démarrage du serveur..."
-    for _ in {1..30}; do
-      state=$(docker exec "$box" systemctl is-system-running 2>/dev/null || true)
-      [[ $state == running || $state == degraded ]] && break
-      sleep 1
-    done
+    demarrage
     docker cp "$dir/break.sh" "$box:/opt/break.sh"
-    docker exec "$box" bash -c 'bash /opt/break.sh && rm -f /opt/break.sh' \
-      || die "La préparation du scénario a échoué (break.sh). Relance : ./doctor start $2"
+    rc=0
+    docker exec "$box" bash -c 'bash /opt/break.sh; rc=$?; rm -f /opt/break.sh; exit $rc' || rc=$?
+    if (( rc == 3 )); then redemarrer; rc=0; fi
+    (( rc == 0 )) || die "La préparation du scénario a échoué (break.sh). Relance : ./doctor start $2"
     echo
     head -1 "$dir/README.md" | sed 's/^# //'
     section "$dir" "Le ticket" | sed 's/^> *//; s/\*\*//g'
@@ -61,8 +78,20 @@ case $cmd in
     docker exec -it -w /root "$box" bash -l
     ;;
   check)
-    docker cp "$dir/check.sh" "$box:/opt/check.sh"
-    if docker exec "$box" bash -c 'bash /opt/check.sh; rc=$?; rm -f /opt/check.sh; exit $rc'; then
+    verifier() {
+      docker cp "$dir/check.sh" "$box:/opt/check.sh"
+      docker exec "$box" bash -c 'bash /opt/check.sh; rc=$?; rm -f /opt/check.sh; exit $rc'
+    }
+    rc=0
+    verifier || rc=$?
+    # Le check garde sur le disque l'étape où il en est, et reprend après chaque redémarrage.
+    for _ in 1 2 3 4; do
+      (( rc == 3 )) || break
+      redemarrer
+      rc=0
+      verifier || rc=$?
+    done
+    if (( rc == 0 )); then
       echo "Serveur réparé. La démarche commentée est dans $dir/README.md"
     else
       echo "Pas encore. Des indices sont dans $dir/README.md"
