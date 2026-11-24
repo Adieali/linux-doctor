@@ -54,6 +54,7 @@ cd linux-doctor
 | [25](scenarios/25-l-audit-ssh-sans-couper-le-transporteur) | L'audit SSH doit passer, sans couper le transporteur | `sshd -T`, `ssh -v`, `journalctl` |
 | [26](scenarios/26-plus-personne-ne-peut-se-connecter) | Plus personne ne peut se connecter | `pam_access`, `faillock`, `journalctl`, `sshd -T` |
 | [27](scenarios/27-les-erreurs-de-la-nuit-ont-disparu) | Les erreurs de la nuit ont disparu | `journalctl`, `journald.conf`, `systemctl show` |
+| [28](scenarios/28-l-export-arrive-corrompu) | L'export de nuit arrive corrompu chez le partenaire | `systemctl list-timers`, cron, unités systemd |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
