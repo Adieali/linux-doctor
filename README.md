@@ -46,6 +46,7 @@ cd linux-doctor
 | [17](scenarios/17-une-commande-sur-trois-echoue) | Une commande sur trois échoue, et tous les serveurs sont verts | `curl`, `socat`, API runtime HAProxy, `journalctl` |
 | [18](scenarios/18-deux-serveurs-ont-la-vip) | Deux serveurs ont la VIP en même temps | `ip addr`, `tcpdump`, `nft`, keepalived |
 | [19](scenarios/19-la-premiere-commande-du-matin-echoue) | La première commande du matin échoue | `ss -o`, `tcpdump`, `sysctl`, `journalctl` |
+| [20](scenarios/20-le-transporteur-repond-a-curl) | Le transporteur répond à curl, pas au service | `systemctl show`, `/proc/<pid>/environ`, `curl -v`, `journalctl` |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
