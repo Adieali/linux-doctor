@@ -41,6 +41,7 @@ cd linux-doctor
 | [12](scenarios/12-un-delete-sans-where) | Un DELETE sans WHERE, et les commandes continuent d'arriver | `psql`, `pg_createcluster`, `pg_ctlcluster`, journaux PostgreSQL |
 | [13](scenarios/13-la-sauvegarde-ne-se-restaure-pas) | La sauvegarde existe mais ne se restaure pas | `tar`, `pg_ctl`, `psql`, `journalctl` |
 | [14](scenarios/14-redis-refuse-les-ecritures) | Redis refuse les écritures | `redis-cli`, `journalctl`, `/sys/fs/cgroup`, unités systemd |
+| [15](scenarios/15-les-partenaires-ne-passent-plus) | Le certificat est valide, les partenaires ne passent plus | `openssl s_client`, `openssl x509`, `curl -v`, nginx |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
