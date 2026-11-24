@@ -55,6 +55,7 @@ cd linux-doctor
 | [26](scenarios/26-plus-personne-ne-peut-se-connecter) | Plus personne ne peut se connecter | `pam_access`, `faillock`, `journalctl`, `sshd -T` |
 | [27](scenarios/27-les-erreurs-de-la-nuit-ont-disparu) | Les erreurs de la nuit ont disparu | `journalctl`, `journald.conf`, `systemctl show` |
 | [28](scenarios/28-l-export-arrive-corrompu) | L'export de nuit arrive corrompu chez le partenaire | `systemctl list-timers`, cron, unités systemd |
+| [29](scenarios/29-le-serveur-parle-a-une-adresse-inconnue) | Le serveur parle à une adresse inconnue | `ps`, `ss`, `/proc`, `journalctl`, `nft` |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
