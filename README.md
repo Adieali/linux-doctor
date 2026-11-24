@@ -49,6 +49,7 @@ cd linux-doctor
 | [20](scenarios/20-le-transporteur-repond-a-curl) | Le transporteur répond à curl, pas au service | `systemctl show`, `/proc/<pid>/environ`, `curl -v`, `journalctl` |
 | [21](scenarios/21-le-nom-resout-vers-le-mauvais-serveur) | Le nom résout vers le mauvais serveur | `getent`, `dig`, `/etc/nsswitch.conf`, `/etc/resolv.conf` |
 | [22](scenarios/22-le-serveur-ne-redemarre-plus) | Le serveur ne redémarre plus | `journalctl -b`, `findmnt`, unités systemd |
+| [23](scenarios/23-le-service-tombe-seulement-au-boot) | Le service tombe seulement au boot | `journalctl -o short-precise`, `systemctl`, `ip addr`, keepalived |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
