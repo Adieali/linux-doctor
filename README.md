@@ -50,6 +50,7 @@ cd linux-doctor
 | [21](scenarios/21-le-nom-resout-vers-le-mauvais-serveur) | Le nom résout vers le mauvais serveur | `getent`, `dig`, `/etc/nsswitch.conf`, `/etc/resolv.conf` |
 | [22](scenarios/22-le-serveur-ne-redemarre-plus) | Le serveur ne redémarre plus | `journalctl -b`, `findmnt`, unités systemd |
 | [23](scenarios/23-le-service-tombe-seulement-au-boot) | Le service tombe seulement au boot | `journalctl -o short-precise`, `systemctl`, `ip addr`, keepalived |
+| [24](scenarios/24-plus-patche-depuis-trois-mois) | Le serveur n'est plus patché depuis trois mois | `dpkg`, `apt`, unattended-upgrades |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
