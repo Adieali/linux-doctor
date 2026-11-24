@@ -52,6 +52,7 @@ cd linux-doctor
 | [23](scenarios/23-le-service-tombe-seulement-au-boot) | Le service tombe seulement au boot | `journalctl -o short-precise`, `systemctl`, `ip addr`, keepalived |
 | [24](scenarios/24-plus-patche-depuis-trois-mois) | Le serveur n'est plus patché depuis trois mois | `dpkg`, `apt`, unattended-upgrades |
 | [25](scenarios/25-l-audit-ssh-sans-couper-le-transporteur) | L'audit SSH doit passer, sans couper le transporteur | `sshd -T`, `ssh -v`, `journalctl` |
+| [26](scenarios/26-plus-personne-ne-peut-se-connecter) | Plus personne ne peut se connecter | `pam_access`, `faillock`, `journalctl`, `sshd -T` |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
