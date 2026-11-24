@@ -44,6 +44,7 @@ cd linux-doctor
 | [15](scenarios/15-les-partenaires-ne-passent-plus) | Le certificat est valide, les partenaires ne passent plus | `openssl s_client`, `openssl x509`, `curl -v`, nginx |
 | [16](scenarios/16-repond-a-l-admin-pas-a-la-prod) | Le serveur répond au réseau d'admin, mais plus à la prod | `ip route`, `ip rule`, `tcpdump`, `sysctl`, ifupdown |
 | [17](scenarios/17-une-commande-sur-trois-echoue) | Une commande sur trois échoue, et tous les serveurs sont verts | `curl`, `socat`, API runtime HAProxy, `journalctl` |
+| [18](scenarios/18-deux-serveurs-ont-la-vip) | Deux serveurs ont la VIP en même temps | `ip addr`, `tcpdump`, `nft`, keepalived |
 
 Le README de chaque scénario contient le ticket, l'impact business, les enjeux de l'intervention, des indices, la démarche commentée, la comparaison avec les autres réparations possibles et ce qu'il faut mettre en place en prod pour que l'incident ne revienne pas. Ne lis pas `break.sh` avant d'avoir joué : c'est lui qui crée la panne.
 
