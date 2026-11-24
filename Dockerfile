@@ -10,8 +10,9 @@ RUN apt-get update \
       openssh-server openssh-client logrotate sudo \
       iputils-ping bind9-dnsutils tcpdump strace dnsmasq-base dhcpcd-base \
       postgresql nftables redis-server python3-psycopg2 ifupdown haproxy socat keepalived \
+      unattended-upgrades apt-utils \
  && rm -rf /var/lib/apt/lists/* \
- && systemctl disable postgresql nftables redis-server haproxy keepalived \
+ && systemctl disable postgresql nftables redis-server haproxy keepalived apt-daily.timer apt-daily-upgrade.timer \
  && systemctl mask getty.target systemd-udevd.service systemd-logind.service systemd-modules-load.service
 
 STOPSIGNAL SIGRTMIN+3
