@@ -17,9 +17,14 @@ jobs:
         run: docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:v0.11.0 doctor tests/*.sh scenarios/*/*.sh
 
   scenarios:
+    name: scenarios ${{ matrix.jours }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        jours: ["01-07", "08-14", "15-21", "22-30"]
     steps:
       - uses: actions/checkout@v7
       - name: Panne, check refusé, solution du README, check accepté
-        run: tests/scenarios.sh
+        run: tests/scenarios.sh ${{ matrix.jours }}

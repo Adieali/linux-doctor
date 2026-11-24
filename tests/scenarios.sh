@@ -3,7 +3,8 @@
 # puis les blocs bash de la « Démarche commentée » du README sont exécutés tels quels,
 # et le check doit les accepter.
 #
-# Usage : tests/scenarios.sh [numéro...]    tous les scénarios par défaut
+# Usage : tests/scenarios.sh [numéro | début-fin ...]    tous les scénarios par défaut
+# Une plage ne prend que les scénarios présents : la CI découpe par semaine sans connaître les jours publiés.
 # En cas d'échec, le serveur reste en place pour l'enquête : ./doctor shell <numéro>
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -14,9 +15,22 @@ solution() {
        f && /^```bash/ {c=1; next} c && /^```/ {c=0} c' "$1/README.md"
 }
 
-nums=("$@")
+presents=()
+for d in scenarios/*/; do d=${d#scenarios/}; presents+=("${d%%-*}"); done
+
+nums=()
+for a in "${@:-01-99}"; do
+  if [[ $a =~ ^([0-9]+)-([0-9]+)$ ]]; then
+    for n in "${presents[@]}"; do
+      (( 10#$n >= 10#${BASH_REMATCH[1]} && 10#$n <= 10#${BASH_REMATCH[2]} )) && nums+=("$n")
+    done
+  else
+    nums+=("$a")
+  fi
+done
 if (( ${#nums[@]} == 0 )); then
-  for d in scenarios/*/; do d=${d#scenarios/}; nums+=("${d%%-*}"); done
+  echo "Aucun scénario publié dans : $*"
+  exit 0
 fi
 
 for n in "${nums[@]}"; do
